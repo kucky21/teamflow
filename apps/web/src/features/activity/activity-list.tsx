@@ -1,20 +1,21 @@
 import {
+  type Activity,
+  type ActivityChange,
   PROJECT_ICONS,
   TASK_PRIORITY_LABELS,
   TASK_STATUS_LABELS,
-  type Activity,
-  type ActivityChange,
   type TaskPriority,
   type TaskStatus,
 } from '@teamflow/shared';
 import { ArrowRight } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { UserAvatar } from '@/components/domain';
-import { Tooltip } from '@/components/ui/menu';
+
+import { UserAvatar } from '@/components/domain/user-avatar';
+import { Tooltip } from '@/components/ui/tooltip';
+import { useTaskPreview } from '@/features/tasks/use-task-preview';
 import { formatDate, formatDateTime, formatRelative } from '@/lib/format';
 import { cn } from '@/lib/utils';
-import { useTaskPreview } from '@/features/tasks/use-task-preview';
 
 const FIELD_LABELS: Record<string, string> = {
   title: 'Název',
@@ -71,19 +72,20 @@ function ChangeLine({ change }: { change: ActivityChange }) {
 
 function TaskRef({ activity, showTitle = true }: { activity: Activity; showTitle?: boolean }) {
   const preview = useTaskPreview();
-  if (!activity.task) return null;
+  const { task } = activity;
+  if (!task) return null;
   const content = (
     <>
-      <span className="font-mono text-[12px]">{activity.task.key}</span>
-      {showTitle ? <span className="font-semibold text-foreground"> {activity.task.title}</span> : null}
+      <span className="font-mono text-[12px]">{task.key}</span>
+      {showTitle ? <span className="font-semibold text-foreground"> {task.title}</span> : null}
     </>
   );
   // Smazaný úkol už nelze otevřít.
-  if (!activity.task.id) return <span className="text-muted-foreground">{content}</span>;
+  if (!task.id) return <span className="text-muted-foreground">{content}</span>;
   return (
     <button
       type="button"
-      onClick={() => preview.open(activity.task!.key)}
+      onClick={() => preview.open(task.key)}
       className="text-left text-muted-foreground hover:text-primary hover:underline"
     >
       {content}
@@ -93,7 +95,7 @@ function TaskRef({ activity, showTitle = true }: { activity: Activity; showTitle
 
 function describe(a: Activity, context: 'global' | 'project' | 'task'): ReactNode {
   const task = context === 'task' ? null : <TaskRef activity={a} />;
-  const member = a.meta['memberName'] ? <strong className="text-foreground">{a.meta['memberName']}</strong> : null;
+  const member = a.meta.memberName ? <strong className="text-foreground">{a.meta.memberName}</strong> : null;
   const status = a.changes.find((c) => c.field === 'status');
   const projectName =
     context === 'global' ? (
@@ -134,7 +136,7 @@ function describe(a: Activity, context: 'global' | 'project' | 'task'): ReactNod
       return (
         <>
           přidání člena {member}
-          {a.meta['role'] ? <> jako {a.meta['role'].toLowerCase()}</> : null}
+          {a.meta.role ? <> jako {a.meta.role.toLowerCase()}</> : null}
         </>
       );
     case 'MEMBER_REMOVED':
@@ -142,11 +144,11 @@ function describe(a: Activity, context: 'global' | 'project' | 'task'): ReactNod
     case 'MEMBER_ROLE_CHANGED':
       return <>změna role člena {member}</>;
     case 'LABEL_CREATED':
-      return <>nový štítek „{a.meta['labelName']}“</>;
+      return <>nový štítek „{a.meta.labelName}“</>;
     case 'LABEL_UPDATED':
-      return <>úprava štítku „{a.meta['labelName']}“</>;
+      return <>úprava štítku „{a.meta.labelName}“</>;
     case 'LABEL_DELETED':
-      return <>smazání štítku „{a.meta['labelName']}“</>;
+      return <>smazání štítku „{a.meta.labelName}“</>;
   }
 }
 
@@ -172,9 +174,9 @@ export function ActivityItem({
         {context === 'global' && activity.type.startsWith('TASK') ? (
           <p className="text-[12px] text-subtle-foreground">{activity.project.name}</p>
         ) : null}
-        {activity.type === 'COMMENT_ADDED' && activity.meta['excerpt'] ? (
+        {activity.type === 'COMMENT_ADDED' && activity.meta.excerpt ? (
           <p className="mt-1.5 line-clamp-2 rounded-md border-l-2 border-border-strong bg-muted/60 px-2.5 py-1.5 text-[13px] text-foreground/85">
-            {activity.meta['excerpt']}
+            {activity.meta.excerpt}
           </p>
         ) : null}
         {showChanges ? (

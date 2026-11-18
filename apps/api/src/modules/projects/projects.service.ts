@@ -1,17 +1,18 @@
 import {
+  type createProjectSchema,
   PROJECT_STATUS_LABELS,
   type ProjectDetail,
   type ProjectSummary,
   type TaskCounts,
   type UpdateProjectInput,
-  type createProjectSchema,
 } from '@teamflow/shared';
 import type { z } from 'zod';
+
+import { iso, todayUtc } from '../../domain/dates.js';
+import { compactChanges, diffField, diffText } from '../../domain/task-changes.js';
 import type { Prisma } from '../../generated/prisma/client.js';
 import { conflict, isUniqueViolation } from '../../lib/errors.js';
 import type { Db } from '../../lib/prisma.js';
-import { iso, todayUtc } from '../../domain/dates.js';
-import { compactChanges, diffField, diffText } from '../../domain/task-changes.js';
 import type { AccessService } from '../access/access.service.js';
 import type { ActivityService } from '../activity/activity.service.js';
 import { toLabel, toProjectRef, toUserSummary, userSummarySelect } from '../mappers.js';
@@ -78,7 +79,7 @@ export class ProjectService {
         });
         return created;
       });
-      return this.detail(project.id, userId);
+      return await this.detail(project.id, userId);
     } catch (error) {
       if (isUniqueViolation(error)) {
         throw conflict(`Klíč projektu „${input.key}“ je již použitý.`, 'PROJECT_KEY_TAKEN');

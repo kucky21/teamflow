@@ -16,6 +16,7 @@
     "dev": "npm run build:shared && concurrently -k -n shared,api,web -c gray,cyan,magenta \"npm run dev -w @teamflow/shared\" \"npm run dev -w @teamflow/api\" \"npm run dev -w @teamflow/web\"",
     "build": "npm run build:shared && npm run build -w @teamflow/api && npm run build -w @teamflow/web",
     "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "npm run build:shared && npm run typecheck --workspaces --if-present",
@@ -34,10 +35,12 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.8",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "globals": "^17.14.0",
     "prettier": "^3.10.1",
     "typescript": "~6.0.3",
     "typescript-eslint": "^8.73.0",
     "vitest": "^5.1.1"
-  }
+  },
+  "packageManager": "npm@10.9.2"
 }

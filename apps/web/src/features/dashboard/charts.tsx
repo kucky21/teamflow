@@ -1,16 +1,17 @@
-import { TASK_STATUS_LABELS, type Dashboard } from '@teamflow/shared';
+import { type Dashboard, TASK_STATUS_LABELS } from '@teamflow/shared';
 import {
   Bar,
   BarChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
+  type TooltipContentProps,
   XAxis,
   YAxis,
-  type TooltipContentProps,
 } from 'recharts';
-import { StatusIcon } from '@/components/domain';
-import { STATUS_CSS_VAR } from '@/components/domain-tokens';
+
+import { StatusIcon } from '@/components/domain/status';
+import { STATUS_CSS_VAR } from '@/components/domain/tokens';
 import { formatDate } from '@/lib/format';
 import { plural } from '@/lib/utils';
 

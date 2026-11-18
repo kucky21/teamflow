@@ -1,3 +1,4 @@
+import { type QueryClient, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   ChangePasswordInput,
   CurrentUser,
@@ -6,7 +7,7 @@ import type {
   UpdateProfileInput,
   UserSummary,
 } from '@teamflow/shared';
-import { useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
+
 import { api, ApiError } from '@/lib/api';
 import { queryKeys } from '@/lib/query-client';
 
@@ -60,7 +61,7 @@ export function useRegister() {
 export function useLogout() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: () => api.post<void>('/auth/logout'),
+    mutationFn: () => api.post<undefined>('/auth/logout'),
     onSettled: () => resetSessionData(qc, null),
   });
 }
@@ -79,7 +80,7 @@ export function useUpdateProfile() {
 
 export function useChangePassword() {
   return useMutation({
-    mutationFn: (input: ChangePasswordInput) => api.post<void>('/users/me/password', input),
+    mutationFn: (input: ChangePasswordInput) => api.post<undefined>('/users/me/password', input),
   });
 }
 

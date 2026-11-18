@@ -1,4 +1,5 @@
 import { config as loadEnv } from 'dotenv';
+
 import { buildApp } from './app.js';
 import { loadConfig } from './config/env.js';
 import { createPrismaClient } from './lib/prisma.js';

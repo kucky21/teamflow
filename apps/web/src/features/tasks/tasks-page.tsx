@@ -1,4 +1,4 @@
-import { TASK_SORT_FIELDS, type Task, type TaskSortField } from '@teamflow/shared';
+import { type Task, TASK_SORT_FIELDS, type TaskSortField } from '@teamflow/shared';
 import {
   ArrowDown,
   ArrowUp,
@@ -12,18 +12,25 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { LabelChip, PriorityBadge, ProjectIcon, StatusBadge, UserAvatar } from '@/components/domain';
+
+import { LabelChip } from '@/components/domain/label-chip';
+import { PriorityBadge } from '@/components/domain/priority';
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { StatusBadge } from '@/components/domain/status';
+import { UserAvatar } from '@/components/domain/user-avatar';
 import { PageContainer, PageHeader } from '@/components/layout/page-header';
 import { EmptyState, ErrorState } from '@/components/states';
 import { Button } from '@/components/ui/button';
-import { Card, Skeleton } from '@/components/ui/misc';
+import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useProjectContext } from '@/features/projects/project-context';
 import { dueState, formatDue } from '@/lib/format';
 import { cn, plural } from '@/lib/utils';
-import { useProjectContext } from '@/features/projects/project-context';
+
 import { useTasks } from './api';
 import { TaskFilterBar } from './task-filters';
-import { useTaskFilterParams } from './use-task-filters';
 import { TaskFormDialog } from './task-form-dialog';
+import { useTaskFilterParams } from './use-task-filters';
 import { useTaskPreview } from './use-task-preview';
 
 const PAGE_SIZE = 20;
@@ -156,17 +163,17 @@ function TaskTable({
             <table className="w-full min-w-[860px] border-collapse text-left text-[13.5px]">
               <thead>
                 <tr className="border-b border-border bg-muted/50 text-[12px] font-bold tracking-wide text-muted-foreground uppercase">
-                  {COLUMNS.map((col) => (
-                    <th key={col.label} scope="col" className={cn('px-4 py-2.5 font-bold', col.className)}>
-                      {col.field ? (
+                  {COLUMNS.map(({ field, label, className }) => (
+                    <th key={label} scope="col" className={cn('px-4 py-2.5 font-bold', className)}>
+                      {field ? (
                         <button
                           type="button"
-                          onClick={() => toggleSort(col.field!)}
+                          onClick={() => toggleSort(field)}
                           className="inline-flex items-center gap-1 uppercase hover:text-foreground"
-                          aria-label={`Řadit podle: ${col.label}`}
+                          aria-label={`Řadit podle: ${label}`}
                         >
-                          {col.label}
-                          {sort === col.field ? (
+                          {label}
+                          {sort === field ? (
                             order === 'asc' ? (
                               <ArrowUp className="size-3.5 text-primary" />
                             ) : (
@@ -177,7 +184,7 @@ function TaskTable({
                           )}
                         </button>
                       ) : (
-                        col.label
+                        label
                       )}
                     </th>
                   ))}

@@ -14,7 +14,7 @@ export async function login(page: Page, email = DEMO.email, password = DEMO.pass
 export function uniqueProjectKey(): string {
   const letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
   let key = 'E';
-  for (let i = 0; i < 4; i++) key += letters[Math.floor(Math.random() * letters.length)];
+  for (let i = 0; i < 4; i++) key += letters.charAt(Math.floor(Math.random() * letters.length));
   return key;
 }
 

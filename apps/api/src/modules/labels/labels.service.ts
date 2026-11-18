@@ -1,4 +1,5 @@
 import type { CreateLabelInput, Label, UpdateLabelInput } from '@teamflow/shared';
+
 import { conflict, isUniqueViolation, notFound } from '../../lib/errors.js';
 import type { Db } from '../../lib/prisma.js';
 import type { AccessService } from '../access/access.service.js';

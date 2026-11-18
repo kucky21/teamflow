@@ -36,6 +36,6 @@ export function suggestProjectKey(name: string): string {
     key = words[0].slice(0, 3);
   }
   key = key.replace(/^[0-9]+/, '');
-  if (key.length < 2) key = (key + 'PRJ').slice(0, 3);
+  if (key.length < 2) key = `${key}PRJ`.slice(0, 3);
   return key.slice(0, 6);
 }

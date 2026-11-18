@@ -2,10 +2,12 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { useState } from 'react';
 import { RouterProvider } from 'react-router/dom';
 import { Toaster } from 'sonner';
-import { TooltipProvider } from '@/components/ui/menu';
+
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { createQueryClient } from '@/lib/query-client';
 import { ThemeProvider } from '@/lib/theme';
 import { useTheme } from '@/lib/theme-context';
+
 import { router } from './router';
 
 function ThemedToaster() {

@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { loginSchema, registerSchema, changePasswordSchema } from './auth.js';
+
+import { dashboardQuerySchema } from './activity.js';
+import { changePasswordSchema, loginSchema, registerSchema } from './auth.js';
 import { createProjectSchema, updateProjectSchema } from './project.js';
 import { createTaskSchema, moveTaskSchema, taskListQuerySchema, taskRefSchema, updateTaskSchema } from './task.js';
-import { dashboardQuerySchema } from './activity.js';
 
 function messages(result: { success: boolean; error?: { issues: { message: string }[] } }) {
   return result.error?.issues.map((i) => i.message) ?? [];

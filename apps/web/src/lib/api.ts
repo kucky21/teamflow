@@ -102,7 +102,7 @@ export const api = {
     apiRequest<T>(path, { query, ...(signal ? { signal } : {}) }),
   post: <T>(path: string, body?: unknown) => apiRequest<T>(path, { method: 'POST', body: body ?? {} }),
   patch: <T>(path: string, body: unknown) => apiRequest<T>(path, { method: 'PATCH', body }),
-  delete: (path: string) => apiRequest<void>(path, { method: 'DELETE' }),
+  delete: (path: string) => apiRequest<undefined>(path, { method: 'DELETE' }),
 };
 
 export function errorMessage(error: unknown): string {

@@ -1,5 +1,6 @@
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient, type Prisma } from '../generated/prisma/client.js';
+
+import { type Prisma, PrismaClient } from '../generated/prisma/client.js';
 
 export type Db = PrismaClient;
 /** Klient použitelný uvnitř i mimo interaktivní transakci. */

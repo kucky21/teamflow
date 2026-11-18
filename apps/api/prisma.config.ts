@@ -12,6 +12,6 @@ export default defineConfig({
   },
   datasource: {
     // `prisma generate` URL nepotřebuje, proto prázdný řetězec jako fallback.
-    url: process.env['DATABASE_URL'] ?? '',
+    url: process.env.DATABASE_URL ?? '',
   },
 });

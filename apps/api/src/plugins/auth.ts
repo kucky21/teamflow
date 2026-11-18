@@ -1,13 +1,14 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
+
 import type { AppConfig } from '../config/env.js';
 import { AppError, forbidden, unauthorized } from '../lib/errors.js';
 import {
   CSRF_COOKIE,
   CSRF_HEADER,
-  SESSION_COOKIE,
-  safeEqual,
   type IssuedSession,
+  safeEqual,
+  SESSION_COOKIE,
 } from '../modules/auth/session.service.js';
 import type { AuthContext } from '../types.js';
 

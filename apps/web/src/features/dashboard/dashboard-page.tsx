@@ -1,28 +1,34 @@
-import type { Task } from '@teamflow/shared';
+import { OPEN_TASK_STATUSES, type Task } from '@teamflow/shared';
 import {
+  Activity as ActivityIcon,
   AlarmClock,
   ArrowRight,
   CheckCircle2,
   CircleDashed,
   FolderKanban,
   Inbox,
-  Activity as ActivityIcon,
   type LucideIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import { PriorityIcon, ProjectIcon, StatusIcon } from '@/components/domain';
+
+import { PriorityIcon } from '@/components/domain/priority';
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { StatusIcon } from '@/components/domain/status';
 import { PageContainer, PageHeader, PageLoader } from '@/components/layout/page-header';
 import { EmptyState, ErrorState } from '@/components/states';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader } from '@/components/ui/misc';
-import { useCurrentUser } from '@/features/auth/api';
+import { Card, CardHeader } from '@/components/ui/card';
 import { ActivityList } from '@/features/activity/activity-list';
+import { useCurrentUser } from '@/features/auth/api';
 import { useTaskPreview } from '@/features/tasks/use-task-preview';
 import { dueState, formatDate, formatDue } from '@/lib/format';
 import { cn } from '@/lib/utils';
+
 import { useDashboard } from './api';
 import { CompletedChart, StatusDistribution } from './charts';
+
+const OPEN_STATUS_PARAM = OPEN_TASK_STATUSES.join(',');
 
 function greeting(): string {
   const hour = new Date().getHours();
@@ -165,7 +171,7 @@ export function DashboardPage() {
           icon={CircleDashed}
           label="Otevřené úkoly"
           value={stats.openTasks}
-          to="/tasks?status=BACKLOG,TODO,IN_PROGRESS,REVIEW"
+          to={`/tasks?status=${OPEN_STATUS_PARAM}`}
           hint="Nedokončené úkoly"
         />
         <StatTile
@@ -217,7 +223,7 @@ export function DashboardPage() {
             description="Nedokončené, seřazené podle termínu"
             action={
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/tasks?assignee=me&status=BACKLOG,TODO,IN_PROGRESS,REVIEW&sort=dueDate&order=asc">
+                <Link to={`/tasks?assignee=me&status=${OPEN_STATUS_PARAM}&sort=dueDate&order=asc`}>
                   Vše <ArrowRight />
                 </Link>
               </Button>

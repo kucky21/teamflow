@@ -14,7 +14,9 @@ import {
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { Logo, ProjectIcon, UserAvatar } from '@/components/domain';
+
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { UserAvatar } from '@/components/domain/user-avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,13 +26,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/menu';
-import { Kbd, Skeleton } from '@/components/ui/misc';
+} from '@/components/ui/dropdown-menu';
+import { Kbd } from '@/components/ui/kbd';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useCurrentUser, useLogout } from '@/features/auth/api';
 import { useProjects } from '@/features/projects/api';
 import { ProjectFormDialog } from '@/features/projects/project-form-dialog';
-import { useTheme, type ThemePreference } from '@/lib/theme-context';
+import { type ThemePreference, useTheme } from '@/lib/theme-context';
 import { cn } from '@/lib/utils';
+
+import { Logo } from './logo';
 
 const navItemClass = ({ isActive }: { isActive: boolean }) =>
   cn(

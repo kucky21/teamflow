@@ -2,11 +2,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { registerSchema } from '@teamflow/shared';
 import { useForm } from 'react-hook-form';
 import { Link, useSearchParams } from 'react-router';
+
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { ApiError, errorMessage } from '@/lib/api';
 import { applyServerErrors } from '@/lib/forms';
+
 import { useRegister } from './api';
 import { AuthLayout } from './auth-layout';
 

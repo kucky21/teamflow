@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url';
+
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
@@ -17,13 +18,13 @@ export default defineConfig({
     port: 5173,
     // API běží na stejném originu přes proxy – cookies jsou first-party a CORS není potřeba.
     proxy: {
-      '/api': { target: process.env['VITE_API_PROXY'] ?? 'http://127.0.0.1:4000', changeOrigin: false },
+      '/api': { target: process.env.VITE_API_PROXY ?? 'http://127.0.0.1:4000', changeOrigin: false },
     },
   },
   preview: {
     port: 4173,
     proxy: {
-      '/api': { target: process.env['VITE_API_PROXY'] ?? 'http://127.0.0.1:4000', changeOrigin: false },
+      '/api': { target: process.env.VITE_API_PROXY ?? 'http://127.0.0.1:4000', changeOrigin: false },
     },
   },
   build: {

@@ -1,4 +1,5 @@
 import type { onRequestHookHandler } from 'fastify';
+
 import type { AppConfig } from './config/env.js';
 import type { Db } from './lib/prisma.js';
 import type { Services } from './services.js';

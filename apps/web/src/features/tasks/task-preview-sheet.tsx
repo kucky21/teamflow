@@ -1,6 +1,6 @@
-import { Dialog } from '@/components/ui/dialog';
-import { SheetContent } from '@/components/ui/dialog';
-import { TaskDetail } from './task-detail';
+import { Dialog, SheetContent } from '@/components/ui/dialog';
+import { TaskDetail } from '@/features/tasks/detail/task-detail';
+
 import { useTaskPreview } from './use-task-preview';
 
 /** Rychlý náhled úkolu v postranním panelu (otevírá se z Kanbanu, seznamu i přehledu). */

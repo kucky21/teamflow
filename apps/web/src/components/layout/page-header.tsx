@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
+
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-import { Skeleton } from '../ui/misc';
 
 export function PageHeader({
   title,

@@ -1,3 +1,4 @@
+import { type QueryClient, useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   ActivityPage,
   AddMemberInput,
@@ -11,7 +12,7 @@ import type {
   UpdateLabelInput,
   UpdateProjectInput,
 } from '@teamflow/shared';
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient, type QueryClient } from '@tanstack/react-query';
+
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/query-client';
 

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { colorSchema, idSchema } from './common.js';
 
 const labelName = z

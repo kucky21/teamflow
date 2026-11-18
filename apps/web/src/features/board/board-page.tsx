@@ -1,37 +1,39 @@
 import {
+  type Announcements,
   closestCenter,
+  type CollisionDetection,
   DndContext,
+  type DragEndEvent,
+  type DragOverEvent,
   DragOverlay,
+  type DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   pointerWithin,
   rectIntersection,
+  type UniqueIdentifier,
   useSensor,
   useSensors,
-  type Announcements,
-  type CollisionDetection,
-  type DragEndEvent,
-  type DragOverEvent,
-  type DragStartEvent,
-  type UniqueIdentifier,
 } from '@dnd-kit/core';
 import { arrayMove, sortableKeyboardCoordinates } from '@dnd-kit/sortable';
-import { hasProjectPermission, TASK_STATUS_LABELS, TASK_STATUSES, type Task, type TaskStatus } from '@teamflow/shared';
+import { hasProjectPermission, type Task, TASK_STATUS_LABELS, TASK_STATUSES, type TaskStatus } from '@teamflow/shared';
 import { KanbanSquare, SearchX } from 'lucide-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
+
 import { EmptyState, ErrorState } from '@/components/states';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/misc';
-import { errorMessage } from '@/lib/api';
-import { queryKeys } from '@/lib/query-client';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useProjectContext } from '@/features/projects/project-context';
-import { useBoard, useMoveTask, type BoardFilters } from '@/features/tasks/api';
-import { groupByStatus, resolveDrop } from '@/features/tasks/board-logic';
+import { type BoardFilters, useBoard, useMoveTask } from '@/features/tasks/api';
 import { TaskFilterBar } from '@/features/tasks/task-filters';
 import { useTaskFilterParams } from '@/features/tasks/use-task-filters';
 import { useTaskPreview } from '@/features/tasks/use-task-preview';
+import { errorMessage } from '@/lib/api';
+import { queryKeys } from '@/lib/query-client';
+
 import { BoardColumn } from './board-column';
+import { groupByStatus, resolveDrop } from './board-logic';
 import { TaskCardView } from './task-card';
 
 type Columns = Record<TaskStatus, string[]>;

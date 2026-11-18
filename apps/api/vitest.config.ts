@@ -13,10 +13,10 @@ export default defineConfig({
       {
         test: {
           name: 'integration',
-          include: ['test/**/*.test.ts'],
+          include: ['test/integration/**/*.test.ts'],
           environment: 'node',
-          globalSetup: ['test/global-setup.ts'],
-          setupFiles: ['test/setup-env.ts'],
+          globalSetup: ['test/support/global-setup.ts'],
+          setupFiles: ['test/support/setup-env.ts'],
           // Testy sdílí jednu testovací databázi – soubory běží sekvenčně.
           fileParallelism: false,
           testTimeout: 30_000,

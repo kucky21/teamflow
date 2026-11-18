@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+
 import { dragTo, login, uniqueProjectKey } from './helpers';
 
 test('vytvoření projektu, úkolu a přesun úkolu na Kanbanu', async ({ page }) => {

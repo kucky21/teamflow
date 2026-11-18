@@ -1,11 +1,13 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { TASK_STATUS_LABELS, type Task, type TaskStatus } from '@teamflow/shared';
+import { type Task, TASK_STATUS_LABELS, type TaskStatus } from '@teamflow/shared';
 import { Plus } from 'lucide-react';
-import { StatusIcon } from '@/components/domain';
-import { STATUS_CSS_VAR } from '@/components/domain-tokens';
+
+import { StatusIcon } from '@/components/domain/status';
+import { STATUS_CSS_VAR } from '@/components/domain/tokens';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+
 import { SortableTaskCard } from './task-card';
 
 interface Props {

@@ -1,17 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createTaskSchema, type ProjectDetail, type TaskStatus } from '@teamflow/shared';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { ProjectIcon } from '@/components/domain';
+
+import { ProjectIcon } from '@/components/domain/project-icon';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { FormField, Label } from '@/components/ui/form-field';
 import { Input, Textarea } from '@/components/ui/input';
-import { Select } from '@/components/ui/misc';
+import { Select } from '@/components/ui/select';
+import { useProject, useProjects } from '@/features/projects/api';
 import { errorMessage } from '@/lib/api';
 import { applyServerErrors } from '@/lib/forms';
-import { useState } from 'react';
-import { useProject, useProjects } from '@/features/projects/api';
+
 import { useCreateTask } from './api';
 import { PRIORITY_OPTIONS, STATUS_OPTIONS } from './options';
 import { AssigneeSelect, LabelPicker } from './pickers';
@@ -47,7 +49,7 @@ function ProjectPicker({ defaultStatus, onDone }: { defaultStatus?: TaskStatus |
   const selectedId = projectId ?? projects.data?.[0]?.id;
   const project = useProject(selectedId);
 
-  if (projects.data && projects.data.length === 0) {
+  if (projects.data?.length === 0) {
     return (
       <div className="grid gap-4">
         <DialogHeader title="Nový úkol" description="Nejdříve je potřeba vytvořit projekt." />

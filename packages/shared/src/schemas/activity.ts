@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { idSchema } from './common.js';
 
 export const activityQuerySchema = z.object({

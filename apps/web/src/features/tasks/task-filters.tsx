@@ -1,16 +1,18 @@
 import {
+  type Label,
+  type Member,
   TASK_PRIORITIES,
   TASK_PRIORITY_LABELS,
   TASK_STATUS_LABELS,
   TASK_STATUSES,
-  type Label,
-  type Member,
 } from '@teamflow/shared';
 import { AlarmClock, ChevronDown, Search, SlidersHorizontal, X } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
-import { PriorityIcon, StatusIcon, UserAvatar } from '@/components/domain';
+import { type ReactNode, useEffect, useState } from 'react';
+
+import { PriorityIcon } from '@/components/domain/priority';
+import { StatusIcon } from '@/components/domain/status';
+import { UserAvatar } from '@/components/domain/user-avatar';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   DropdownMenu,
   DropdownMenuCheckItem,
@@ -18,8 +20,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/menu';
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
+
 import type { TaskFilterState } from './use-task-filters';
 
 function SearchInput({ value, onChange }: { value: string; onChange: (v: string) => void }) {

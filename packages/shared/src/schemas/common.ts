@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { LIMITS, PALETTE_COLORS } from '../constants.js';
 
 export const idSchema = z.uuid('Neplatný identifikátor');

@@ -1,10 +1,13 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { TASK_PRIORITY_LABELS, type Task } from '@teamflow/shared';
+import { type Task, TASK_PRIORITY_LABELS } from '@teamflow/shared';
 import { CalendarDays, MessageSquare } from 'lucide-react';
 import { memo } from 'react';
-import { LabelChip, PriorityIcon, UserAvatar } from '@/components/domain';
-import { Tooltip } from '@/components/ui/menu';
+
+import { LabelChip } from '@/components/domain/label-chip';
+import { PriorityIcon } from '@/components/domain/priority';
+import { UserAvatar } from '@/components/domain/user-avatar';
+import { Tooltip } from '@/components/ui/tooltip';
 import { dueState, formatDue } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
@@ -127,7 +130,7 @@ export function SortableTaskCard({ task, disabled, onOpen }: { task: Task; disab
           onOpen();
           return;
         }
-        listeners?.['onKeyDown']?.(e);
+        listeners?.onKeyDown?.(e);
       }}
     >
       <TaskCardView task={task} dragging={isDragging} />

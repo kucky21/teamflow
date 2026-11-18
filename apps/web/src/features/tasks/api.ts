@@ -1,3 +1,11 @@
+import {
+  keepPreviousData,
+  type QueryClient,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import type {
   ActivityPage,
   Board,
@@ -11,17 +19,10 @@ import type {
   TaskStatus,
   UpdateTaskInput,
 } from '@teamflow/shared';
-import {
-  keepPreviousData,
-  useInfiniteQuery,
-  useMutation,
-  useQuery,
-  useQueryClient,
-  type QueryClient,
-} from '@tanstack/react-query';
+
+import { applyOptimisticMove, type MoveInput } from '@/features/board/board-logic';
 import { api } from '@/lib/api';
 import { queryKeys } from '@/lib/query-client';
-import { applyOptimisticMove, type MoveInput } from './board-logic';
 
 export interface BoardFilters {
   q?: string | undefined;

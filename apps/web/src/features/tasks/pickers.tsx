@@ -1,9 +1,11 @@
 import type { Label, Member } from '@teamflow/shared';
 import { Check, Plus, Tags, UserRound } from 'lucide-react';
 import { useState } from 'react';
-import { LabelChip, UserAvatar } from '@/components/domain';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/menu';
-import { Select, type SelectOption } from '@/components/ui/misc';
+
+import { LabelChip } from '@/components/domain/label-chip';
+import { UserAvatar } from '@/components/domain/user-avatar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, type SelectOption } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 const NONE = '__none__';

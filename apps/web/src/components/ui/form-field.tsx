@@ -1,5 +1,6 @@
 import { Label as LabelPrimitive } from 'radix-ui';
-import { cloneElement, isValidElement, useId, type ComponentProps, type ReactElement, type ReactNode } from 'react';
+import { cloneElement, type ComponentProps, isValidElement, type ReactElement, type ReactNode, useId } from 'react';
+
 import { cn } from '@/lib/utils';
 
 export function Label({ className, ...props }: ComponentProps<typeof LabelPrimitive.Root>) {

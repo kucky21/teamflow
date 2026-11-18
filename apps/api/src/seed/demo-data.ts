@@ -1,16 +1,24 @@
 import { randomUUID } from 'node:crypto';
+
 import {
-  formatTaskKey,
   type ActivityChange,
   type ActivityType,
+  formatTaskKey,
   type ProjectRole,
   type TaskPriority,
   type TaskStatus,
 } from '@teamflow/shared';
+
+import { POSITION_STEP } from '../domain/ordering.js';
 import type { Prisma } from '../generated/prisma/client.js';
 import type { Db } from '../lib/prisma.js';
-import { POSITION_STEP } from '../domain/ordering.js';
 import { hashPassword } from '../modules/auth/password.js';
+
+function required<K, V>(map: ReadonlyMap<K, V>, key: K): V {
+  const value = map.get(key);
+  if (value === undefined) throw new Error(`Seed: chybí záznam pro klíč ${String(key)}.`);
+  return value;
+}
 
 /**
  * Demo data pro lokální prezentaci. Přihlašovací údaje jsou veřejně známé,
@@ -37,13 +45,15 @@ function createRandom(seed: number) {
     pick: <T>(items: readonly T[]): T => items[Math.floor(next() * items.length)] as T,
     chance: (p: number) => next() < p,
     weighted: <T>(entries: readonly (readonly [T, number])[]): T => {
+      const last = entries.at(-1);
+      if (!last) throw new Error('weighted() vyžaduje alespoň jednu položku.');
       const total = entries.reduce((s, [, w]) => s + w, 0);
       let r = next() * total;
       for (const [value, weight] of entries) {
         r -= weight;
         if (r <= 0) return value;
       }
-      return entries[entries.length - 1]![0];
+      return last[0];
     },
   };
 }
@@ -315,7 +325,7 @@ export async function seedDemoData(db: Db, now = new Date()): Promise<SeedSummar
       createdAt: ago(90, 48),
     });
   }
-  const uid = (key: UserKey) => userIds.get(key)!;
+  const uid = (key: UserKey) => required(userIds, key);
 
   const projects: Prisma.ProjectCreateManyInput[] = [];
   const members: Prisma.ProjectMemberCreateManyInput[] = [];
@@ -343,7 +353,7 @@ export async function seedDemoData(db: Db, now = new Date()): Promise<SeedSummar
       projectId,
       actorId,
       taskId: extra.taskId ?? null,
-      changes: (extra.changes ?? []) as unknown as Prisma.InputJsonValue,
+      changes: extra.changes ?? [],
       meta: { ...extra.meta, ...(extra.task ? { taskKey: extra.task.key, taskTitle: extra.task.title } : {}) },
       createdAt,
     });
@@ -375,7 +385,7 @@ export async function seedDemoData(db: Db, now = new Date()): Promise<SeedSummar
       memberIds.push(uid(key));
       log('MEMBER_ADDED', projectId, ownerId, joinedAt, {
         meta: {
-          memberName: userNames.get(uid(key))!,
+          memberName: required(userNames, uid(key)),
           role: role === 'PROJECT_MANAGER' ? 'Projektový manažer' : 'Člen',
         },
       });
@@ -465,7 +475,7 @@ export async function seedDemoData(db: Db, now = new Date()): Promise<SeedSummar
         log('TASK_UPDATED', projectId, creatorId, new Date(taskCreatedAt.getTime() + 20 * 60 * 1000), {
           taskId: id,
           task: ref,
-          changes: [{ field: 'assignee', from: null, to: userNames.get(assigneeId)! }],
+          changes: [{ field: 'assignee', from: null, to: required(userNames, assigneeId) }],
         });
       }
       const actor = assigneeId ?? creatorId;

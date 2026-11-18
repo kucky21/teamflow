@@ -1,9 +1,9 @@
 import {
-  formatTaskKey,
   type Activity,
   type ActivityChange,
-  type ActivityType,
   type Comment,
+  type CurrentUser,
+  formatTaskKey,
   type Label,
   type ProjectIcon,
   type ProjectRef,
@@ -11,8 +11,9 @@ import {
   type TaskDetail,
   type UserSummary,
 } from '@teamflow/shared';
-import type { Prisma } from '../generated/prisma/client.js';
+
 import { iso, toIsoDate } from '../domain/dates.js';
+import type { Prisma } from '../generated/prisma/client.js';
 
 /*
  * Výběry a mapovací funkce mezi Prisma modely a DTO z @teamflow/shared.
@@ -64,6 +65,10 @@ export type CommentRow = Prisma.TaskCommentGetPayload<{ include: typeof commentI
 
 export function toUserSummary(u: UserSummaryRow): UserSummary {
   return { id: u.id, name: u.name, email: u.email, avatarColor: u.avatarColor };
+}
+
+export function toCurrentUser(u: UserSummaryRow & { createdAt: Date }): CurrentUser {
+  return { ...toUserSummary(u), createdAt: iso(u.createdAt) };
 }
 
 export function toProjectRef(p: ProjectRefRow): ProjectRef {
@@ -151,7 +156,7 @@ export function toActivityDto(a: ActivityRow): Activity {
   const { taskKey, taskTitle, ...rest } = meta;
   return {
     id: a.id,
-    type: a.type as ActivityType,
+    type: a.type,
     createdAt: iso(a.createdAt),
     actor: toUserSummary(a.actor),
     project: toProjectRef(a.project),

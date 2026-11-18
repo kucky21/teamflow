@@ -1,8 +1,11 @@
 import { History } from 'lucide-react';
+
 import { EmptyState, ErrorState } from '@/components/states';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, Skeleton } from '@/components/ui/misc';
+import { Card, CardHeader } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ActivityList } from '@/features/activity/activity-list';
+
 import { useProjectActivity } from './api';
 import { useProjectContext } from './project-context';
 

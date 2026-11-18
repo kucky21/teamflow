@@ -1,6 +1,8 @@
 import { Navigate, Outlet, useLocation, useSearchParams } from 'react-router';
+
+import { Logo } from '@/components/layout/logo';
 import { ErrorState } from '@/components/states';
-import { Logo } from '@/components/domain';
+
 import { useMe } from './api';
 
 function FullScreenLoader() {

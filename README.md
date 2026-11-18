@@ -78,14 +78,18 @@ first-party a není potřeba CORS.
 
 ### Backend – vrstvy
 
-- **Routes** (`modules/*/*.routes.ts`) – HTTP rozhraní, Zod schémata pro `body`/`params`/`querystring`/odpovědi.
+- **Moduly** (`modules/<doména>/`) – každý modul má vlastní `*.routes.ts` a `*.service.ts`
+  (auth, users, projects, members, labels, tasks, comments, activity, dashboard, system).
+- **Routes** (`modules/*/*.routes.ts`) – HTTP rozhraní, Zod schémata pro `body`/`params`/`querystring`/odpovědi
+  (včetně `204 No Content`), ze kterých se generuje OpenAPI specifikace.
 - **Services** (`modules/*/*.service.ts`) – business logika a transakce. Závislosti dostávají přes konstruktor
   (kompoziční kořen v `services.ts`), takže testy pracují se skutečnou databází bez mocků frameworku.
 - **Datová vrstva** – Prisma Client s explicitními `select`/`include` a mappery na DTO (`modules/mappers.ts`);
   hash hesla ani jiná interní pole nikdy neopustí server. Odpovědi navíc validuje serializer podle DTO schémat.
 - **Access** (`modules/access/access.service.ts`) – centrální kontrola členství, role a archivace pro každou operaci.
 - **Domain** (`domain/`) – čistá logika bez I/O: frakční řazení Kanbanu, stavba bezpečného `tsquery`, diff změn.
-- **Plugins** – autentizace + CSRF (`plugins/auth.ts`), jednotný error handler (`plugins/error-handler.ts`).
+- **Plugins** – autentizace + CSRF (`plugins/auth.ts`), jednotný error handler (`plugins/error-handler.ts`),
+  OpenAPI + Swagger UI (`plugins/openapi.ts`).
 
 Chyby mají vždy tvar `{ "error": { "code", "message", "details?" } }` (např. `VALIDATION_ERROR` s cestou k poli,
 `PROJECT_ARCHIVED`, `CSRF_TOKEN_INVALID`).
@@ -179,7 +183,8 @@ Ostatní demo účty (`*@teamflow.local`) mají stejné heslo.
 
 ```bash
 npm run check        # lint + formát + typecheck + všechny unit/integrační testy
-npm run lint         # ESLint (0 varování tolerováno)
+npm run lint         # ESLint – typově informovaná pravidla, 0 varování tolerováno
+npm run lint:fix     # automatické opravy (včetně řazení importů)
 npm run typecheck    # tsc --noEmit ve všech balíčcích
 npm test             # Vitest – shared, API (unit + integrační), web
 npm run test:e2e     # Playwright – proti běžící aplikaci (výchozí http://localhost:8080)
@@ -232,34 +237,58 @@ Zápisové požadavky přihlášeného uživatele musí obsahovat hlavičku `X-C
 
 ## Struktura adresářů
 
-```
+```text
 teamflow/
 ├── apps/
 │   ├── api/
-│   │   ├── prisma/                 # schema.prisma + SQL migrace
+│   │   ├── prisma/                   # schema.prisma + SQL migrace
 │   │   ├── src/
-│   │   │   ├── config/             # validace proměnných prostředí
-│   │   │   ├── domain/             # čistá doménová logika (řazení, fulltext, diff)
-│   │   │   ├── lib/                # Prisma klient, doménové chyby
-│   │   │   ├── modules/            # auth, projects, tasks, comments, labels, activity, dashboard, access
-│   │   │   ├── plugins/            # autentizace + CSRF, error handler
-│   │   │   ├── seed/               # demo data a CLI
-│   │   │   ├── app.ts              # sestavení Fastify aplikace (DI pro testy)
-│   │   │   └── server.ts           # vstupní bod (seed při startu, graceful shutdown)
-│   │   └── test/                   # integrační testy proti PostgreSQL
+│   │   │   ├── config/               # validace proměnných prostředí (+ test)
+│   │   │   ├── domain/               # čistá logika bez I/O: řazení, fulltext, diff, data (+ testy)
+│   │   │   ├── lib/                  # Prisma klient, doménové chyby
+│   │   │   ├── modules/
+│   │   │   │   ├── <modul>/          # <modul>.routes.ts + <modul>.service.ts
+│   │   │   │   └── mappers.ts        # Prisma → DTO (explicitní select)
+│   │   │   ├── plugins/              # auth + CSRF, error handler, OpenAPI
+│   │   │   ├── seed/                 # demo data a CLI
+│   │   │   ├── app.ts                # sestavení Fastify aplikace (DI pro testy)
+│   │   │   ├── services.ts           # kompoziční kořen služeb
+│   │   │   └── server.ts             # vstupní bod (seed při startu, graceful shutdown)
+│   │   └── test/
+│   │       ├── integration/          # integrační testy proti PostgreSQL
+│   │       └── support/              # příprava DB, test klient s cookie jar a CSRF
 │   └── web/
-│       ├── e2e/                    # Playwright testy
+│       ├── e2e/                      # Playwright testy
 │       └── src/
-│           ├── app/                # providery a router (lazy načítání stránek)
-│           ├── components/         # UI primitiva, layout, doménové komponenty
-│           ├── features/           # auth, dashboard, projects, board, tasks, activity, settings
-│           ├── lib/                # API klient, query client, formátování, motiv
-│           └── styles/             # Tailwind + designové tokeny (světlý/tmavý režim)
-├── packages/shared/                # Zod schémata, DTO, výčty, oprávnění
-├── infra/docker/                   # Dockerfily, nginx, entrypoint
-├── .github/workflows/ci.yml        # CI: kvalita + E2E
+│           ├── app/                  # providery, router, root layout, chybové stránky
+│           ├── components/
+│           │   ├── ui/               # UI primitiva (button, dialog, select, tabs, tooltip …)
+│           │   ├── domain/           # doménové komponenty (stav, priorita, avatar, štítek)
+│           │   └── layout/           # app shell, sidebar, hlavička stránky, hledání
+│           ├── features/
+│           │   ├── auth/  dashboard/  board/  activity/  settings/
+│           │   ├── projects/         # seznam, layout projektu, settings/ (členové, štítky, archivace)
+│           │   └── tasks/            # seznam, filtry, formuláře, detail/ (pole, komentáře, historie)
+│           ├── lib/                  # API klient, query client, formátování, motiv
+│           ├── styles/               # Tailwind + designové tokeny (světlý/tmavý režim)
+│           └── test/                 # nastavení Vitest
+├── packages/shared/                  # Zod schémata, DTO, výčty, oprávnění
+├── infra/docker/
+│   ├── api/                          # Dockerfile + entrypoint (migrace → start)
+│   └── web/                          # Dockerfile + nginx konfigurace a bezpečnostní hlavičky
+├── .github/workflows/ci.yml          # CI: kvalita + E2E
 └── compose.yaml
 ```
+
+### Konvence kódu
+
+- **TypeScript strict** (`noUncheckedIndexedAccess`, `verbatimModuleSyntax`) a ESLint `strictTypeChecked` – mj. zakazuje
+  neošetřené promise, `any` a zbytečné non-null aserce.
+- **Testy leží vedle kódu** (`*.test.ts`), integrační testy API v `apps/api/test/integration`.
+- **Importy** – v rámci stejné složky relativně (`./api`), jinak přes alias `@/…` (web); pořadí hlídá
+  `simple-import-sort`.
+- **Jeden soubor = jedna zodpovědnost** – UI primitiva i doménové komponenty mají vlastní soubory, velké obrazovky
+  jsou rozdělené na menší sekce.
 
 ## Bezpečnost
 

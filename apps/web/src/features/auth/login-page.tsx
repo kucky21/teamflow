@@ -3,15 +3,17 @@ import { loginSchema } from '@teamflow/shared';
 import { Sparkles } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Link, useSearchParams } from 'react-router';
+
 import { Button } from '@/components/ui/button';
 import { FormField } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
 import { errorMessage } from '@/lib/api';
+
 import { useLogin } from './api';
 import { AuthLayout } from './auth-layout';
 
 const DEMO = { email: 'demo@teamflow.local', password: 'Demo1234!' };
-const SHOW_DEMO_HINT = import.meta.env['VITE_SHOW_DEMO_HINT'] !== 'false';
+const SHOW_DEMO_HINT = import.meta.env.VITE_SHOW_DEMO_HINT !== 'false';
 
 export function LoginPage() {
   const login = useLogin();

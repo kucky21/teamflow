@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { AVATAR_COLORS } from '../constants.js';
 import { emailSchema, passwordSchema, personNameSchema } from './common.js';
 
@@ -37,3 +38,4 @@ export const userSearchQuerySchema = z.object({
   q: z.string().trim().max(100).optional(),
   excludeProjectId: z.uuid().optional(),
 });
+export type UserSearchQuery = z.infer<typeof userSearchQuerySchema>;

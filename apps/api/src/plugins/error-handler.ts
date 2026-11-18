@@ -1,5 +1,6 @@
 import type { FastifyError, FastifyInstance } from 'fastify';
 import { hasZodFastifySchemaValidationErrors, isResponseSerializationError } from 'fastify-type-provider-zod';
+
 import { AppError } from '../lib/errors.js';
 
 const CONTEXT_MESSAGES: Record<string, string> = {
@@ -16,7 +17,7 @@ const CONTEXT_MESSAGES: Record<string, string> = {
 export function registerErrorHandler(app: FastifyInstance): void {
   app.setErrorHandler((error: FastifyError | AppError | Error, request, reply) => {
     if (hasZodFastifySchemaValidationErrors(error)) {
-      const context = 'validationContext' in error ? String(error.validationContext ?? '') : '';
+      const context = 'validationContext' in error ? (error.validationContext ?? '') : '';
       return reply.status(400).send({
         error: {
           code: 'VALIDATION_ERROR',

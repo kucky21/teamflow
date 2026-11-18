@@ -4,24 +4,17 @@ import {
   type CurrentUser,
   type LoginInput,
   type RegisterInput,
-  type UpdateProfileInput,
-  type UserSummary,
 } from '@teamflow/shared';
+
 import { AppError, conflict, isUniqueViolation, unauthorized } from '../../lib/errors.js';
 import type { Db } from '../../lib/prisma.js';
-import { iso } from '../../domain/dates.js';
-import type { AccessService } from '../access/access.service.js';
-import { toUserSummary, userSummarySelect } from '../mappers.js';
+import { toCurrentUser } from '../mappers.js';
 import { getDummyHash, hashPassword, verifyPassword } from './password.js';
 import type { IssuedSession, SessionService } from './session.service.js';
 
-interface ClientMeta {
+export interface ClientMeta {
   userAgent?: string | undefined;
   ip?: string | undefined;
-}
-
-export function toCurrentUser(u: { id: string; name: string; email: string; avatarColor: string; createdAt: Date }) {
-  return { ...toUserSummary(u), createdAt: iso(u.createdAt) } satisfies CurrentUser;
 }
 
 function pickAvatarColor(email: string): string {
@@ -34,7 +27,6 @@ export class AuthService {
   constructor(
     private readonly db: Db,
     private readonly sessions: SessionService,
-    private readonly access: AccessService,
   ) {}
 
   async register(input: RegisterInput, meta: ClientMeta): Promise<{ user: CurrentUser; session: IssuedSession }> {
@@ -71,17 +63,6 @@ export class AuthService {
     return { user: toCurrentUser(user), session };
   }
 
-  async updateProfile(userId: string, input: UpdateProfileInput): Promise<CurrentUser> {
-    const user = await this.db.user.update({
-      where: { id: userId },
-      data: {
-        ...(input.name !== undefined ? { name: input.name } : {}),
-        ...(input.avatarColor !== undefined ? { avatarColor: input.avatarColor } : {}),
-      },
-    });
-    return toCurrentUser(user);
-  }
-
   /** Změna hesla zneplatní všechny ostatní přihlášené relace uživatele. */
   async changePassword(userId: string, sessionId: string, input: ChangePasswordInput): Promise<void> {
     const user = await this.db.user.findUnique({ where: { id: userId } });
@@ -96,30 +77,5 @@ export class AuthService {
       await tx.user.update({ where: { id: userId }, data: { passwordHash } });
       await this.sessions.revokeOthers(userId, sessionId, tx);
     });
-  }
-
-  /** Vyhledávání uživatelů pro přidání do projektu. */
-  async searchUsers(userId: string, query: { q?: string | undefined; excludeProjectId?: string | undefined }) {
-    if (query.excludeProjectId) {
-      await this.access.project(query.excludeProjectId, userId, 'member:manage');
-    }
-    const q = query.q?.trim();
-    const users = await this.db.user.findMany({
-      where: {
-        ...(q
-          ? {
-              OR: [
-                { name: { contains: q, mode: 'insensitive' as const } },
-                { email: { contains: q, mode: 'insensitive' as const } },
-              ],
-            }
-          : {}),
-        ...(query.excludeProjectId ? { memberships: { none: { projectId: query.excludeProjectId } } } : {}),
-      },
-      select: userSummarySelect,
-      orderBy: { name: 'asc' },
-      take: 20,
-    });
-    return users.map((u): UserSummary => toUserSummary(u));
   }
 }

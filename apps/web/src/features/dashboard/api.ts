@@ -1,5 +1,6 @@
-import type { Dashboard } from '@teamflow/shared';
 import { useQuery } from '@tanstack/react-query';
+import type { Dashboard } from '@teamflow/shared';
+
 import { api } from '@/lib/api';
 import { userTimeZone } from '@/lib/format';
 import { queryKeys } from '@/lib/query-client';

@@ -7,9 +7,10 @@ import { SessionService } from './modules/auth/session.service.js';
 import { CommentService } from './modules/comments/comments.service.js';
 import { DashboardService } from './modules/dashboard/dashboard.service.js';
 import { LabelService } from './modules/labels/labels.service.js';
-import { MemberService } from './modules/projects/members.service.js';
+import { MemberService } from './modules/members/members.service.js';
 import { ProjectService } from './modules/projects/projects.service.js';
 import { TaskService } from './modules/tasks/tasks.service.js';
+import { UserService } from './modules/users/users.service.js';
 
 /** Jednoduchý kompoziční kořen – služby dostávají závislosti přes konstruktor. */
 export function createServices(db: Db, config: AppConfig) {
@@ -20,7 +21,8 @@ export function createServices(db: Db, config: AppConfig) {
     access,
     activity,
     sessions,
-    auth: new AuthService(db, sessions, access),
+    auth: new AuthService(db, sessions),
+    users: new UserService(db, access),
     projects: new ProjectService(db, access, activity),
     members: new MemberService(db, access, activity),
     labels: new LabelService(db, access, activity),

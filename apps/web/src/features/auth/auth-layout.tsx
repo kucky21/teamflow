@@ -1,5 +1,8 @@
 import type { ReactNode } from 'react';
-import { Logo, PriorityIcon, StatusIcon } from '@/components/domain';
+
+import { PriorityIcon } from '@/components/domain/priority';
+import { StatusIcon } from '@/components/domain/status';
+import { Logo } from '@/components/layout/logo';
 
 function PreviewCard({
   id,

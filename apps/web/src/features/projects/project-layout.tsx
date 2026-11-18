@@ -2,15 +2,18 @@ import { hasProjectPermission, type TaskStatus } from '@teamflow/shared';
 import { Archive, History, KanbanSquare, List, Plus, Settings } from 'lucide-react';
 import { Suspense, useState } from 'react';
 import { NavLink, Outlet, useParams } from 'react-router';
-import { AvatarStack, ProjectIcon } from '@/components/domain';
+
+import { NotFoundPage } from '@/app/not-found-page';
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { AvatarStack } from '@/components/domain/user-avatar';
 import { PageLoader } from '@/components/layout/page-header';
 import { ErrorState } from '@/components/states';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/misc';
+import { Skeleton } from '@/components/ui/skeleton';
+import { TaskFormDialog } from '@/features/tasks/task-form-dialog';
 import { ApiError } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import { NotFoundPage } from '@/features/misc/not-found-page';
-import { TaskFormDialog } from '@/features/tasks/task-form-dialog';
+
 import { useProject } from './api';
 import { ProjectContext, type ProjectContextValue } from './project-context';
 import { ProjectStatusBadge } from './projects-page';

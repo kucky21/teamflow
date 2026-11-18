@@ -2,8 +2,11 @@ import { CornerDownLeft, FolderKanban, Search } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { useDeferredValue, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { ProjectIcon, StatusIcon } from '@/components/domain';
-import { Kbd, Skeleton } from '@/components/ui/misc';
+
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { StatusIcon } from '@/components/domain/status';
+import { Kbd } from '@/components/ui/kbd';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useProjects } from '@/features/projects/api';
 import { useTasks } from '@/features/tasks/api';
 import { cn } from '@/lib/utils';
@@ -72,7 +75,7 @@ export function CommandSearch({ open, onOpenChange }: { open: boolean; onOpenCha
   const go = (item: ResultItem | undefined) => {
     if (!item) return;
     onOpenChange(false);
-    navigate(item.href);
+    void navigate(item.href);
   };
 
   return (

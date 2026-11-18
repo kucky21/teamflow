@@ -1,11 +1,6 @@
 import {
-  activityPageDto,
-  activityQuerySchema,
   boardDto,
   boardQuerySchema,
-  commentDto,
-  commentParamsSchema,
-  createCommentSchema,
   createTaskSchema,
   moveTaskSchema,
   projectTaskParamsSchema,
@@ -14,17 +9,15 @@ import {
   taskListQuerySchema,
   taskPageDto,
   taskParamsSchema,
-  updateCommentSchema,
   updateTaskSchema,
 } from '@teamflow/shared';
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { z } from 'zod';
-import { getAuth } from '../../plugins/auth.js';
 
-const security = [{ cookieAuth: [] }];
+import { getAuth } from '../../plugins/auth.js';
+import { cookieSecurity, noContent } from '../../plugins/openapi.js';
 
 export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
-  const { tasks, comments, activity } = app.services;
+  const { tasks } = app.services;
 
   app.get(
     '/tasks',
@@ -32,7 +25,7 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Seznam úkolů s filtrováním, fulltextem, řazením a stránkováním',
-        security,
+        security: cookieSecurity,
         querystring: taskListQuerySchema,
         response: { 200: taskPageDto },
       },
@@ -46,7 +39,7 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Úkoly projektu pro Kanban (seřazené podle pozice)',
-        security,
+        security: cookieSecurity,
         params: projectTaskParamsSchema,
         querystring: boardQuerySchema,
         response: { 200: boardDto },
@@ -61,7 +54,7 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Vytvoření úkolu',
-        security,
+        security: cookieSecurity,
         params: projectTaskParamsSchema,
         body: createTaskSchema,
         response: { 201: taskDetailDto },
@@ -77,7 +70,7 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Detail úkolu (podle UUID nebo klíče, např. TF-104)',
-        security,
+        security: cookieSecurity,
         params: taskParamsSchema,
         response: { 200: taskDetailDto },
       },
@@ -91,7 +84,7 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Úprava úkolu (změny se zapisují do historie)',
-        security,
+        security: cookieSecurity,
         params: taskParamsSchema,
         body: updateTaskSchema,
         response: { 200: taskDetailDto },
@@ -106,7 +99,7 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Přesun úkolu na Kanbanu (sloupec a pořadí)',
-        security,
+        security: cookieSecurity,
         params: taskParamsSchema,
         body: moveTaskSchema,
         response: { 200: taskDto },
@@ -121,91 +114,14 @@ export const taskRoutes: FastifyPluginAsyncZod = async (app) => {
       schema: {
         tags: ['Tasks'],
         summary: 'Smazání úkolu (autor nebo správce projektu)',
-        security,
+        security: cookieSecurity,
         params: taskParamsSchema,
+        response: noContent,
       },
     },
     async (request, reply) => {
       await tasks.remove(request.params.taskId, getAuth(request).user.id);
-      return reply.status(204).send();
-    },
-  );
-
-  app.get(
-    '/tasks/:taskId/history',
-    {
-      schema: {
-        tags: ['Activity'],
-        summary: 'Historie změn úkolu',
-        security,
-        params: taskParamsSchema,
-        querystring: activityQuerySchema,
-        response: { 200: activityPageDto },
-      },
-    },
-    async (request) => activity.listForTask(request.params.taskId, getAuth(request).user.id, request.query),
-  );
-
-  // ------------------------------------------------------------ komentáře
-
-  app.get(
-    '/tasks/:taskId/comments',
-    {
-      schema: {
-        tags: ['Comments'],
-        summary: 'Komentáře k úkolu',
-        security,
-        params: taskParamsSchema,
-        response: { 200: z.object({ items: z.array(commentDto) }) },
-      },
-    },
-    async (request) => ({ items: await comments.list(request.params.taskId, getAuth(request).user.id) }),
-  );
-
-  app.post(
-    '/tasks/:taskId/comments',
-    {
-      schema: {
-        tags: ['Comments'],
-        summary: 'Přidání komentáře',
-        security,
-        params: taskParamsSchema,
-        body: createCommentSchema,
-        response: { 201: commentDto },
-      },
-    },
-    async (request, reply) =>
-      reply.status(201).send(await comments.create(request.params.taskId, getAuth(request).user.id, request.body.body)),
-  );
-
-  app.patch(
-    '/comments/:commentId',
-    {
-      schema: {
-        tags: ['Comments'],
-        summary: 'Úprava vlastního komentáře',
-        security,
-        params: commentParamsSchema,
-        body: updateCommentSchema,
-        response: { 200: commentDto },
-      },
-    },
-    async (request) => comments.update(request.params.commentId, getAuth(request).user.id, request.body.body),
-  );
-
-  app.delete(
-    '/comments/:commentId',
-    {
-      schema: {
-        tags: ['Comments'],
-        summary: 'Smazání komentáře (autor nebo správce projektu)',
-        security,
-        params: commentParamsSchema,
-      },
-    },
-    async (request, reply) => {
-      await comments.remove(request.params.commentId, getAuth(request).user.id);
-      return reply.status(204).send();
+      return reply.status(204).send(null);
     },
   );
 };

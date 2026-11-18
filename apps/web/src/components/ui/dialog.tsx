@@ -1,7 +1,9 @@
 import { X } from 'lucide-react';
 import { AlertDialog as AlertPrimitive, Dialog as DialogPrimitive } from 'radix-ui';
 import type { ComponentProps, ReactNode } from 'react';
+
 import { cn } from '@/lib/utils';
+
 import { Button } from './button';
 
 export const Dialog = DialogPrimitive.Root;

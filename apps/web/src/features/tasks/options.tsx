@@ -6,8 +6,10 @@ import {
   type TaskPriority,
   type TaskStatus,
 } from '@teamflow/shared';
-import { PriorityIcon, StatusIcon } from '@/components/domain';
-import type { SelectOption } from '@/components/ui/misc';
+
+import { PriorityIcon } from '@/components/domain/priority';
+import { StatusIcon } from '@/components/domain/status';
+import type { SelectOption } from '@/components/ui/select';
 
 export const STATUS_OPTIONS: SelectOption<TaskStatus>[] = TASK_STATUSES.map((s) => ({
   value: s,

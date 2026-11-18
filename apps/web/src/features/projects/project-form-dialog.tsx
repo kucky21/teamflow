@@ -5,23 +5,25 @@ import {
   PROJECT_ICONS,
   PROJECT_STATUS_LABELS,
   PROJECT_STATUSES,
-  suggestProjectKey,
   type ProjectDetail,
+  suggestProjectKey,
 } from '@teamflow/shared';
 import { Check } from 'lucide-react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
-import { ProjectIcon } from '@/components/domain';
-import { PROJECT_ICON_COMPONENTS } from '@/components/domain-tokens';
+
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { PROJECT_ICON_COMPONENTS } from '@/components/domain/tokens';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader } from '@/components/ui/dialog';
 import { FormField, Label } from '@/components/ui/form-field';
 import { Input, Textarea } from '@/components/ui/input';
-import { Select } from '@/components/ui/misc';
+import { Select } from '@/components/ui/select';
 import { ApiError, errorMessage } from '@/lib/api';
 import { applyServerErrors } from '@/lib/forms';
 import { cn } from '@/lib/utils';
+
 import { useCreateProject, useUpdateProject } from './api';
 
 interface Props {
@@ -89,7 +91,7 @@ function ProjectForm({ project, onDone }: { project?: ProjectDetail | undefined;
         const created = await create.mutateAsync(values);
         toast.success(`Projekt „${created.name}“ byl vytvořen.`);
         onDone();
-        navigate(`/projects/${created.id}/board`);
+        void navigate(`/projects/${created.id}/board`);
       }
     } catch (error) {
       if (error instanceof ApiError && error.code === 'PROJECT_KEY_TAKEN') {

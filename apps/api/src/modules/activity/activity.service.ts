@@ -1,4 +1,5 @@
 import type { ActivityChange, ActivityPage, ActivityQuery, ActivityType } from '@teamflow/shared';
+
 import type { Prisma } from '../../generated/prisma/client.js';
 import type { Db, DbClient } from '../../lib/prisma.js';
 import type { AccessService } from '../access/access.service.js';
@@ -25,8 +26,8 @@ export class ActivityService {
   async record(db: DbClient, entry: ActivityEntry): Promise<void> {
     const meta: Record<string, string> = { ...entry.meta };
     if (entry.task) {
-      meta['taskKey'] = entry.task.key;
-      meta['taskTitle'] = entry.task.title;
+      meta.taskKey = entry.task.key;
+      meta.taskTitle = entry.task.title;
     }
     await db.activityLog.create({
       data: {
@@ -34,7 +35,7 @@ export class ActivityService {
         projectId: entry.projectId,
         actorId: entry.actorId,
         taskId: entry.taskId ?? null,
-        changes: (entry.changes ?? []) as unknown as Prisma.InputJsonValue,
+        changes: entry.changes ?? [],
         meta,
       },
     });

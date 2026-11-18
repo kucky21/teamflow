@@ -2,13 +2,19 @@ import { PROJECT_ROLE_LABELS, PROJECT_STATUS_LABELS, type ProjectSummary } from 
 import { Archive, FolderKanban, Plus } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router';
-import { AvatarStack, ProjectIcon } from '@/components/domain';
+
+import { ProjectIcon } from '@/components/domain/project-icon';
+import { AvatarStack } from '@/components/domain/user-avatar';
 import { PageContainer, PageHeader } from '@/components/layout/page-header';
 import { EmptyState, ErrorState } from '@/components/states';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Badge, Card, Skeleton, Tabs, TabsList, TabsTrigger } from '@/components/ui/misc';
+import { Card } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { formatDate } from '@/lib/format';
 import { cn, plural } from '@/lib/utils';
+
 import { useProjects } from './api';
 import { ProjectFormDialog } from './project-form-dialog';
 

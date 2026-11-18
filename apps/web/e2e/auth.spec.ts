@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+
 import { DEMO, login } from './helpers';
 
 test.describe('autentizace', () => {

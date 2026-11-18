@@ -1,18 +1,20 @@
 import { createBrowserRouter, Navigate } from 'react-router';
+
 import { AppShell } from '@/components/layout/app-shell';
-import { Root } from '@/components/layout/root';
-import { RouteError } from '@/components/layout/route-error';
 import { GuestOnly, RequireAuth } from '@/features/auth/guards';
 import { LoginPage } from '@/features/auth/login-page';
 import { RegisterPage } from '@/features/auth/register-page';
-import { NotFoundPage } from '@/features/misc/not-found-page';
 import { ProjectLayout } from '@/features/projects/project-layout';
 import { ProjectsPage } from '@/features/projects/projects-page';
+
+import { NotFoundPage } from './not-found-page';
+import { RootLayout } from './root-layout';
+import { RouteError } from './route-error';
 
 /* Těžší stránky (grafy, drag & drop) se načítají až při první návštěvě. */
 export const router = createBrowserRouter([
   {
-    element: <Root />,
+    element: <RootLayout />,
     errorElement: <RouteError />,
     children: [
       {
@@ -57,7 +59,7 @@ export const router = createBrowserRouter([
                   {
                     path: 'settings',
                     lazy: () =>
-                      import('@/features/projects/project-settings-page').then((m) => ({
+                      import('@/features/projects/settings/project-settings-page').then((m) => ({
                         Component: m.ProjectSettingsPage,
                       })),
                   },

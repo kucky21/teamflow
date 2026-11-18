@@ -1,8 +1,9 @@
-import { AlertTriangle, RotateCw, type LucideIcon } from 'lucide-react';
+import { AlertTriangle, type LucideIcon, RotateCw } from 'lucide-react';
 import type { ReactNode } from 'react';
+
+import { Button } from '@/components/ui/button';
 import { errorMessage } from '@/lib/api';
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
 
 interface EmptyStateProps {
   icon: LucideIcon;

@@ -2,10 +2,12 @@ import { Menu, Search } from 'lucide-react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { Suspense, useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router';
-import { Logo } from '@/components/domain';
+
 import { Button } from '@/components/ui/button';
 import { TaskPreviewSheet } from '@/features/tasks/task-preview-sheet';
+
 import { CommandSearch } from './command-search';
+import { Logo } from './logo';
 import { PageLoader } from './page-header';
 import { Sidebar } from './sidebar';
 

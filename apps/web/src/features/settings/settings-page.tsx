@@ -4,17 +4,18 @@ import { Monitor, Moon, Sun } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { UserAvatar } from '@/components/domain';
+
+import { UserAvatar } from '@/components/domain/user-avatar';
 import { PageContainer, PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
+import { Card, CardHeader } from '@/components/ui/card';
 import { FormField, Label } from '@/components/ui/form-field';
 import { Input } from '@/components/ui/input';
-import { Card, CardHeader } from '@/components/ui/misc';
 import { useChangePassword, useCurrentUser, useUpdateProfile } from '@/features/auth/api';
 import { ApiError, errorMessage } from '@/lib/api';
 import { formatDate } from '@/lib/format';
 import { applyServerErrors } from '@/lib/forms';
-import { useTheme, type ThemePreference } from '@/lib/theme-context';
+import { type ThemePreference, useTheme } from '@/lib/theme-context';
 import { cn } from '@/lib/utils';
 
 const profileSchema = z.object({ name: personNameSchema, avatarColor: z.enum(AVATAR_COLORS) });

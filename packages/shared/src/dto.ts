@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import {
   ACTIVITY_TYPES,
   PROJECT_ICONS,

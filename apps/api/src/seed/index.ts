@@ -5,6 +5,7 @@
  * POZOR: smaže všechna stávající data v databázi a vytvoří je znovu.
  */
 import { config as loadEnv } from 'dotenv';
+
 import { loadConfig } from '../config/env.js';
 import { createPrismaClient } from '../lib/prisma.js';
 import { DEMO_EMAIL, DEMO_PASSWORD, seedDemoData } from './demo-data.js';

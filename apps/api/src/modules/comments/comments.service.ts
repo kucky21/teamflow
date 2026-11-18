@@ -1,4 +1,5 @@
-import { canDeleteComment, formatTaskKey, type Comment } from '@teamflow/shared';
+import { canDeleteComment, type Comment, formatTaskKey } from '@teamflow/shared';
+
 import { forbidden, notFound } from '../../lib/errors.js';
 import type { Db, DbClient } from '../../lib/prisma.js';
 import type { AccessService } from '../access/access.service.js';

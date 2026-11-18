@@ -15,8 +15,7 @@ export const MIN_POSITION_GAP = 1e-6;
  * nebo `null`, pokud je mezi nimi příliš malá mezera a je nutné přečíslování.
  */
 export function positionBetween(prev: number | null, next: number | null): number | null {
-  if (prev === null && next === null) return POSITION_STEP;
-  if (prev === null) return (next as number) - POSITION_STEP;
+  if (prev === null) return next === null ? POSITION_STEP : next - POSITION_STEP;
   if (next === null) return prev + POSITION_STEP;
   if (next <= prev) return null;
   if (next - prev < MIN_POSITION_GAP * 2) return null;

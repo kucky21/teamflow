@@ -1,8 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router';
+
 import { PageContainer } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
-import { TaskDetail } from './task-detail';
+import { TaskDetail } from '@/features/tasks/detail/task-detail';
 
 export function TaskPage() {
   const { taskRef = '' } = useParams();
