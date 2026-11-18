@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+playwright-report
+test-results
+package-lock.json
+apps/api/src/generated
+apps/api/prisma/migrations
+claude.md
+infra/docker/*.inc
+infra/docker/nginx.conf

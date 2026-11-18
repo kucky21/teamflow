@@ -1,0 +1,26 @@
+# Závislosti a buildy
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Generovaný Prisma klient
+apps/api/src/generated/
+
+# Testy
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Prostředí – nikdy necommitovat skutečné hodnoty
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log

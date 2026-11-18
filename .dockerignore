@@ -1,0 +1,14 @@
+**/node_modules
+**/dist
+**/coverage
+**/playwright-report
+**/test-results
+**/.vite
+apps/api/src/generated
+.git
+.github
+.env
+**/.env
+*.log
+README.md
+claude.md

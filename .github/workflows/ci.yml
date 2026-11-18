@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Lint, typecheck a testy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18.1-alpine
+        env:
+          POSTGRES_USER: teamflow
+          POSTGRES_PASSWORD: teamflow
+          POSTGRES_DB: teamflow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U teamflow"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://teamflow:teamflow@localhost:5432/teamflow?schema=public
+      DATABASE_URL_TEST: postgresql://teamflow:teamflow@localhost:5432/teamflow_test?schema=public
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Formátování
+        run: npm run format:check
+      - name: TypeScript
+        run: npm run typecheck
+      - name: Unit a integrační testy
+        run: npm test
+      - name: Produkční build
+        run: npm run build
+
+  e2e:
+    name: E2E (Docker Compose + Playwright)
+    runs-on: ubuntu-latest
+    needs: quality
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - name: Spuštění aplikace
+        run: |
+          cp .env.example .env
+          docker compose up --build --detach --wait
+      - run: npm ci
+      - name: Instalace prohlížeče
+        run: npx playwright install --with-deps chromium
+        working-directory: apps/web
+      - name: E2E testy
+        run: npm run test:e2e
+        env:
+          E2E_BASE_URL: http://localhost:8080
+      - name: Logy kontejnerů
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Report Playwright
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7
